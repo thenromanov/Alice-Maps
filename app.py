@@ -1,5 +1,5 @@
 from flask import Flask, request
-from geo import getCoords, getCountry, getDist
+from geo import getGeoInfo, getDistance
 import logging
 import json
 
@@ -28,9 +28,10 @@ def handleDialog(res, req):
     if not cities:
         res['response']['text'] = 'Ты не написал не одного города!'
     elif len(cities) == 1:
-        res['response']['text'] = f'Этот город в стране {getCountry(cities[0])}'
+        res['response']['text'] = f'Этот город в стране {getGeoInfo(cities[0], "country")}'
     elif len(cities) == 2:
-        dist = getDist(getCoords(cities[0]), getCoords(cities[1]))
+        dist = getDistance(getGeoInfo(cities[0], 'coordinates'),
+                           getGeoInfo(cities[1], 'coordinates'))
         res['response']['text'] = f'Расстояние между этими городами: {str(round(dist))} км'
     else:
         res['response']['text'] = 'Слишком много городов!'
